@@ -87,7 +87,7 @@ function Footer() {
         </div>
 
         <div className="border-t border-zinc-800/80 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-zinc-500 text-sm">
-          <p>جميع الحقوق محفوظة © {new Date().getFullYear()} متجر يوتيوب بريميوم</p>
+          <p>جميع الحقوق محفوظة © {new Date().getFullYear()} متجر عين</p>
           <div className="flex gap-4 items-center">
              <SiVisa className="w-10 h-10 opacity-50 hover:opacity-100 transition-opacity" />
              <SiMastercard className="w-10 h-10 opacity-50 hover:opacity-100 transition-opacity" />
@@ -204,7 +204,7 @@ function ProductDetail() {
             <CardContent className="p-6 md:p-8 space-y-4">
               <h3 className="text-xl font-bold text-foreground flex items-center gap-2" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>
                 <Shield className="w-6 h-6 text-primary" />
-                لماذا متجر سعودي بريم؟
+                لماذا متجر عين؟
               </h3>
               <ul className="space-y-3 mt-4 text-muted-foreground font-medium">
                 <li className="flex items-start gap-3">
