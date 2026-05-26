@@ -68,6 +68,7 @@ function Navbar() {
        <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between relative">
          <div className="flex items-center gap-4 md:gap-6 text-sm font-medium">
             <Link href="/"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">الرئيسية</span></Link>
+            <a href="#reviews"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">التقييمات</span></a>
             <Link href="/support"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">دعم فني</span></Link>
          </div>
 
@@ -238,7 +239,7 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
   const avg = reviews.length ? (reviews.reduce((a,r) => a + r.stars, 0) / reviews.length).toFixed(1) : "5.0";
 
   return (
-    <section className="py-16" dir="rtl">
+    <section id="reviews" className="py-16" dir="rtl" style={{background: "rgba(10,5,2,0.6)"}}>
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-6" style={{borderColor: "rgba(224,90,20,0.2)"}}>
           <div>
@@ -298,9 +299,8 @@ function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setRev
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.4) }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: Math.min(i * 0.05, 0.6) }}
               className="rounded-2xl p-5 flex flex-col gap-3"
               style={{background: "rgba(20,10,5,0.8)", border: "1px solid rgba(139,58,10,0.2)", backdropFilter: "blur(10px)"}}
             >
@@ -746,6 +746,9 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
           </div>
         </section>
 
+        {/* Reviews Section */}
+        <ReviewsSection reviews={reviews} setReviews={setReviews} />
+
         {/* Order Form */}
         <section id="order" className="py-20" style={{background: "transparent"}}>
           <div className="container mx-auto px-4 max-w-3xl">
@@ -818,8 +821,6 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
           </div>
         </section>
       </main>
-
-      <ReviewsSection reviews={reviews} setReviews={setReviews} />
 
       <Footer />
     </div>
