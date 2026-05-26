@@ -416,7 +416,7 @@ function ProductDetail() {
           >
             <div className="absolute inset-0 opacity-40" style={{backgroundImage: "radial-gradient(circle at 25% 75%, #e05a14 0%, transparent 55%), radial-gradient(circle at 75% 25%, #8b3a0a 0%, transparent 55%)"}} />
             <div className="absolute inset-0 opacity-10" style={{backgroundImage: "repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)", backgroundSize: "20px 20px"}} />
-            <Youtube className="w-28 h-28 mb-4 relative z-10" fill="#FF0000" style={{color: "#FF0000", filter: "drop-shadow(0 0 30px rgba(255,0,0,0.8)) drop-shadow(0 0 60px rgba(255,0,0,0.4))"}} />
+            <YtLogo className="w-28 h-28 mb-4 relative z-10" style={{filter: "drop-shadow(0 0 30px rgba(255,0,0,0.8)) drop-shadow(0 0 60px rgba(255,0,0,0.4))"}} />
             <span className="text-white font-black text-3xl tracking-tight relative z-10" style={{textShadow: "0 0 30px rgba(224,90,20,0.9), 0 2px 8px rgba(0,0,0,0.5)"}}>يوتيوب بريميوم</span>
             <Badge className="absolute bottom-6 right-6 bg-white text-red-700 hover:bg-white/90 font-bold text-lg px-4 py-1">
               <span className="line-through opacity-60 ml-1">29</span> 4 ر.س
@@ -716,7 +716,7 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
                          رقمي
                        </div>
                        <div className="relative z-10 flex flex-col items-center group-hover:scale-110 transition-transform duration-300">
-                         <Youtube className="w-16 h-16 drop-shadow-2xl" style={{color: "#FF0000", filter: "drop-shadow(0 0 18px rgba(255,0,0,0.8))"}} fill="#FF0000" />
+                         <YtLogo className="w-16 h-16" style={{filter: "drop-shadow(0 0 18px rgba(255,0,0,0.8))"}} />
                          <span className="text-white font-black text-xl tracking-tight mt-1" style={{textShadow: "0 0 20px rgba(139,58,10,0.8)"}}>يوتيوب بريميوم</span>
                        </div>
                     </div>
