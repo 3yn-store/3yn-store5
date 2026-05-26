@@ -17,6 +17,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+function YtLogo({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 90 63" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="90" height="63" rx="14" fill="#FF0000"/>
+      <polygon points="36,18 36,45 62,31.5" fill="white"/>
+    </svg>
+  );
+}
+
 type UserType = { name: string; phone: string };
 type ReviewItem = { user: string; date: string; text: string; stars: number };
 
@@ -73,7 +82,7 @@ function Navbar() {
          </div>
 
          <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-           <img src="/logo.png" alt="3YN" className="h-12 w-auto object-contain transition-transform hover:scale-105" style={{filter: "drop-shadow(0 0 8px rgba(224,90,20,0.55))"}} />
+           <YtLogo className="h-10 w-auto transition-transform hover:scale-105" style={{filter: "drop-shadow(0 0 8px rgba(255,0,0,0.7))", display: "block"}} />
          </Link>
 
          <div className="flex items-center gap-3">
@@ -332,7 +341,7 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-zinc-400">
           <div>
             <div className="mb-5">
-              <img src="/logo.png" alt="3YN" className="h-16 w-auto object-contain" style={{filter: "drop-shadow(0 0 10px rgba(224,90,20,0.4))"}} />
+              <YtLogo className="h-14 w-auto" style={{filter: "drop-shadow(0 0 10px rgba(255,0,0,0.5))", display: "block"}} />
             </div>
             <p className="text-sm leading-relaxed mb-6">
               متجرك الأول المعتمد لبيع اشتراكات اليوتيوب بريميوم بأفضل الأسعار وأسرع وقت تفعيل. خدمة عملاء على مدار الساعة لخدمتكم وتلبية احتياجاتكم.
@@ -392,7 +401,7 @@ function ProductDetail() {
           <ChevronRight className="w-4 h-4 rotate-180" />
           <Link href="/#products"><span className="hover:text-primary cursor-pointer transition-colors">يوتيوب بريميوم</span></Link>
           <ChevronRight className="w-4 h-4 rotate-180" />
-          <span className="text-foreground font-medium">اشتراك يوتيوب بريميوم | شهر</span>
+          <span className="text-foreground font-medium">اشتراك يوتيوب بريميوم | على ايميلك</span>
         </div>
 
         {/* Product Section */}
@@ -423,7 +432,7 @@ function ProductDetail() {
             style={{background: "rgba(20,10,5,0.8)", border: "1px solid rgba(139,58,10,0.2)", backdropFilter: "blur(10px)"}}
           >
             <div className="space-y-2">
-              <h1 className="text-3xl font-black text-foreground leading-tight" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>اشتراك يوتيوب بريميوم | شهر</h1>
+              <h1 className="text-3xl font-black text-foreground leading-tight" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>اشتراك يوتيوب بريميوم | على ايميلك</h1>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center justify-center w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
                 <span className="text-green-500 font-medium text-sm">متوفر في المخزون</span>
@@ -678,7 +687,7 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
 
             <div className="flex justify-center">
               {[
-                { id: 1, title: "اشتراك يوتيوب بريميوم | شهر", price: "4.00", oldPrice: "29.00" }
+                { id: 1, title: "اشتراك يوتيوب بريميوم | على ايميلك", price: "4.00", oldPrice: "29.00" }
               ].map((p, i) => (
                 <motion.div
                   key={p.id}
@@ -806,7 +815,7 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
 
                     <div className="rounded-xl p-4 flex items-center gap-3" style={{background: "rgba(139,58,10,0.1)", border: "1px solid rgba(139,58,10,0.25)"}}>
                       <Badge className="bg-primary text-white text-base px-4 py-1.5 font-black shrink-0">4 ر.س</Badge>
-                      <span className="text-foreground font-medium text-sm">اشتراك يوتيوب بريميوم | شهر واحد</span>
+                      <span className="text-foreground font-medium text-sm">اشتراك يوتيوب بريميوم | على ايميلك</span>
                       <span className="text-zinc-500 line-through text-sm mr-auto">29 ر.س</span>
                     </div>
 
@@ -1077,14 +1086,12 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
         exit={{ scale: 1.1, opacity: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 18 }}
       >
-        <motion.img
-          src="/logo.png"
-          alt="3YN"
-          className="w-52 h-auto object-contain"
-          style={{filter: "drop-shadow(0 0 30px rgba(224,90,20,0.8)) drop-shadow(0 0 60px rgba(224,90,20,0.4))"}}
+        <motion.div
           animate={{ scale: [1, 1.04, 1] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-        />
+        >
+          <YtLogo className="w-40 h-auto" style={{filter: "drop-shadow(0 0 30px rgba(255,0,0,0.9)) drop-shadow(0 0 60px rgba(255,0,0,0.4))", display: "block"}} />
+        </motion.div>
         <motion.div
           className="h-1 rounded-full"
           style={{background: "linear-gradient(90deg, #8b3a0a, #e05a14, #8b3a0a)", boxShadow: "0 0 12px rgba(224,90,20,0.6)"}}
