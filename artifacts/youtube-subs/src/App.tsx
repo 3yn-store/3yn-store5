@@ -387,6 +387,7 @@ function Footer() {
 }
 
 function ProductDetail() {
+  const { reviews } = React.useContext(UserContext);
   const handlePay = () => {
     window.location.href = "/#order";
   };
@@ -433,12 +434,29 @@ function ProductDetail() {
             className="flex flex-col justify-center space-y-6 p-8 rounded-2xl"
             style={{background: "rgba(20,10,5,0.8)", border: "1px solid rgba(139,58,10,0.2)", backdropFilter: "blur(10px)"}}
           >
-            <div className="space-y-2">
+            <div className="space-y-3">
               <h1 className="text-3xl font-black text-foreground leading-tight" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>اشتراك يوتيوب بريميوم | على ايميلك</h1>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center justify-center w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
                 <span className="text-green-500 font-medium text-sm">متوفر في المخزون</span>
               </div>
+              {/* Rating tracker */}
+              {(() => {
+                const avg = reviews.length ? (reviews.reduce((s, r) => s + r.stars, 0) / reviews.length) : 5;
+                const count = reviews.length;
+                return (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-0.5">
+                      {[1,2,3,4,5].map(i => (
+                        <Star key={i} className="w-4 h-4" fill={i <= Math.round(avg) ? "#f59e0b" : "none"} style={{color: "#f59e0b"}} />
+                      ))}
+                    </div>
+                    <span className="text-amber-400 font-bold text-sm">{avg.toFixed(1)}</span>
+                    <span className="text-zinc-400 text-xs">({count} تقييم)</span>
+                    <a href="#reviews" className="text-xs text-primary/70 hover:text-primary underline underline-offset-2 transition-colors">اقرأ التقييمات</a>
+                  </div>
+                );
+              })()}
             </div>
             
             <div className="border-y py-4 flex items-baseline gap-3" style={{borderColor: "rgba(224,90,20,0.2)"}}>
