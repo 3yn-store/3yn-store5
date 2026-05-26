@@ -1,45 +1,48 @@
-# [Project name]
+# متجر عين — YouTube Premium Storefront
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
-
-## Run & Operate
-
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+## Project Overview
+Arabic storefront ("متجر عين") for selling YouTube Premium subscriptions via WhatsApp-based manual fulfillment. Built with React + Vite + TypeScript in a pnpm monorepo.
 
 ## Stack
+- **Frontend**: React 18 + Vite + TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui components
+- **Routing**: wouter (hash-free client-side routing with SPA fallback)
+- **Forms**: react-hook-form + zod validation
+- **Animations**: framer-motion
+- **Icons**: lucide-react + react-icons
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+## User Preferences
+- Store name: "عين" (used in footer, headings)
+- WhatsApp number: 966500708427
+- Price: 4 SAR (was 29 SAR)
+- Product name: "اشتراك يوتيوب بريميوم | على ايميلك"
+- Language: Arabic (RTL), font: Tajawal
+- All reviews are pre-seeded (22 × 5-star), users can add more without login
+- Logo: `/logo.png` (orange eye logo) — used in navbar, footer, splash
+- YouTube logo in product cards: custom `YtLogo` SVG (red rectangle + white triangle)
 
-## Where things live
+## Pages & Routes
+- `/` — Home (hero, products, features, reviews, order form)
+- `/product` — Product detail page (with rating tracker + reviews)
+- `/support` — Support page (WhatsApp contact)
+- `/about` — About page
+- `/policy/returns` — Returns policy
+- `/policy/terms` — Terms of service
+- `/policy/privacy` — Privacy policy
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+## Running the App
+```bash
+pnpm install
+pnpm --filter @workspace/youtube-subs run dev
+```
 
-## Architecture decisions
+## Building for Production
+```bash
+pnpm --filter @workspace/youtube-subs run build
+# Output: artifacts/youtube-subs/dist/public/
+```
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+## Deployment Notes
+- SPA routing: `public/_redirects` (Netlify) and `public/404.html` (GitHub Pages) included
+- No backend required — order flow opens WhatsApp with prefilled message
+- No API keys or secrets required

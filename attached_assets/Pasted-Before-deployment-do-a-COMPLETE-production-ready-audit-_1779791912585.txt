@@ -1,0 +1,40 @@
+Before deployment, do a COMPLETE production-ready audit of the entire website and make sure EVERYTHING is fully finished, secure, optimized, and working correctly.
+
+I built this project on Replit, but I plan to host/deploy the final website through GitHub, so make sure the entire project structure is fully compatible with GitHub-based deployment workflows.
+
+Carefully review every page, feature, component, API, database connection, checkout flow, and user interaction across the entire site.
+
+Make sure ALL of the following are fully completed:
+
+* No broken pages, buttons, links, forms, or images
+* No console errors, warnings, crashes, or failed API requests
+* Fully responsive on mobile, tablet, laptop, and large screens
+* Fast loading speeds and optimized performance
+* Clean modern UI/UX everywhere with consistent styling
+* Secure authentication and protected admin functionality
+* API keys and secrets moved to environment variables
+* Add proper `.gitignore` and remove sensitive/private files from Git tracking
+* Ensure GitHub-safe project structure and deployment compatibility
+* HTTPS/SSL ready
+* Payment system fully functional and secure
+* Webhooks correctly configured
+* Users cannot access digital products without payment
+* Digital product delivery system works perfectly
+* Proper error handling for all edge cases
+* Loading states and success/error messages added
+* Database queries optimized
+* SEO basics completed
+* Terms of Service, Privacy Policy, and Refund Policy pages added
+* Analytics and logging configured
+* Anti-spam/basic protection enabled
+* Proper validation on all inputs/forms
+* Remove unused code, duplicate files, and dead components
+* Ensure codebase is clean, maintainable, and production-ready
+* Make sure the site works correctly after refresh/navigation
+* Verify the app can run correctly after cloning from GitHub and reinstalling dependencies
+* Add clear setup/start instructions if needed
+* Test all user flows from start to finish like a real customer
+
+Then perform a FULL final QA test across the entire website and automatically fix every issue found.
+
+The final result should feel like a real high-quality production business website ready for GitHub deployment and real customers immediately.

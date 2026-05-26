@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Route, Switch, useLocation, Link } from "wouter";
+import NotFound from "@/pages/not-found";
+import { Route, Switch, Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Search, PlaySquare, Shield, Clock, Zap, Send, CheckCircle2, Youtube, ChevronRight, Phone, Star, User, X, LogOut, MessageSquare
+  Search, PlaySquare, Shield, Clock, Zap, Send, CheckCircle2, ChevronRight, Phone, Star, User, X, LogOut, MessageSquare
 } from "lucide-react";
 import { SiVisa, SiMastercard, SiApplepay } from "react-icons/si";
 
@@ -79,7 +80,7 @@ function Navbar() {
        <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between relative">
          <div className="flex items-center gap-4 md:gap-6 text-sm font-medium">
             <Link href="/"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">الرئيسية</span></Link>
-            <a href="#reviews"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">التقييمات</span></a>
+            <a href="/#reviews"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">التقييمات</span></a>
             <Link href="/support"><span className="hover:text-[#e05a14] transition-colors text-muted-foreground cursor-pointer">دعم فني</span></Link>
          </div>
 
@@ -413,7 +414,10 @@ function Footer() {
 function ProductDetail() {
   const { reviews } = React.useContext(UserContext);
   const handlePay = () => {
-    window.location.href = "/#order";
+    const msg = encodeURIComponent(
+      `مرحباً، أرغب في الاشتراك في يوتيوب بريميوم 🎬\n\nالباقة: اشتراك على ايميلك — 4 ر.س`
+    );
+    window.open(`https://wa.me/966500708427?text=${msg}`, "_blank");
   };
 
   return (
@@ -625,9 +629,8 @@ function ProductDetail() {
   );
 }
 
-function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: ReviewItem[]) => void }) {
+function Home() {
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
 
   const form = useForm<OrderFormValues>({
     resolver: zodResolver(orderFormSchema),
@@ -704,7 +707,7 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
                 >
                   <div className="bg-black/90 rounded-[1.5rem] aspect-[9/18] p-4 flex flex-col relative overflow-hidden shadow-inner border border-zinc-800">
                      <div className="flex justify-between items-center mb-6">
-                       <Youtube className="w-8 h-8 text-primary" style={{filter: "drop-shadow(0 0 8px rgba(224,90,20,0.6))"}} />
+                       <YtLogo className="w-8 h-8" style={{filter: "drop-shadow(0 0 8px rgba(255,0,0,0.6))"}} />
                        <div className="w-8 h-8 bg-zinc-800 rounded-full" />
                      </div>
                      <div className="bg-zinc-800 w-full h-36 rounded-xl mb-4" />
@@ -1182,12 +1185,8 @@ export default function App() {
         <Route path="/policy/terms" component={TermsPage} />
         <Route path="/policy/privacy" component={PrivacyPage} />
         <Route path="/about" component={AboutPage} />
-        <Route path="/">
-          {() => <Home reviews={reviews} setReviews={setReviews} />}
-        </Route>
-        <Route>
-          {() => <Home reviews={reviews} setReviews={setReviews} />}
-        </Route>
+        <Route path="/" component={Home} />
+        <Route component={NotFound} />
       </Switch>
       <WhatsAppFloat />
       <Toaster />
