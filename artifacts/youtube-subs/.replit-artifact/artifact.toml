@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "اشتراكات يوتيوب"
+version = "1.0.0"
+id = "artifacts/youtube-subs"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24647
+
+[services.development]
+run = "pnpm --filter @workspace/youtube-subs run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/youtube-subs", "run", "build" ]
+publicDir = "artifacts/youtube-subs/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24647"
+BASE_PATH = "/"
