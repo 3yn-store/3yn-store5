@@ -3,9 +3,9 @@ import { Route, Switch, useLocation, Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Search, PlaySquare, Shield, Clock, Zap, Send, CheckCircle2, Youtube, ChevronRight, Phone
+  Search, PlaySquare, Shield, Clock, Zap, Send, CheckCircle2, Youtube, ChevronRight, Phone, Star, User, X, LogOut, MessageSquare
 } from "lucide-react";
 import { SiVisa, SiMastercard, SiApplepay } from "react-icons/si";
 
@@ -17,6 +17,41 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+type UserType = { name: string; phone: string };
+type ReviewItem = { user: string; date: string; text: string; stars: number };
+
+const UserContext = React.createContext<{
+  user: UserType | null;
+  setUser: (u: UserType | null) => void;
+  showLogin: boolean;
+  setShowLogin: (v: boolean) => void;
+}>({ user: null, setUser: () => {}, showLogin: false, setShowLogin: () => {} });
+
+const INITIAL_REVIEWS: ReviewItem[] = [
+  { user: "استغفرالله. .", date: "2026/03/30", stars: 5, text: "انصح بالتعامل معهم في قمة الأخلاق لو فيه أكثر من 5 نجوم أعطيتهم وزيادة" },
+  { user: "مؤيد علي 1", date: "2026/03/30", stars: 5, text: "صدق ثقه والله يرزقهم 💐 اشتركت يوتيوب عندهم" },
+  { user: "محمد مسفر الأحمري", date: "2026/03/30", stars: 5, text: "مضمون الله يوفقهم سرعة في الاستجابه ومحترمين انصح بالتعامل معاهم" },
+  { user: "user 48 9646390", date: "2026/03/28", stars: 5, text: "أشتركت معهم في يوتيوب بريميوم وافي وصادق وأنصح بالتعامل معه" },
+  { user: "12yasser34", date: "2026/03/27", stars: 5, text: "جدا حلوه انصحكم اشترو منهم ترونهم ثقه عمياء" },
+  { user: "aarar12", date: "2026/03/23", stars: 5, text: "رجال أمين وثقه وسريع وتعامله راقي" },
+  { user: "wash", date: "2026/03/20", stars: 5, text: "جميل وأكثر متجر أشتري منه" },
+  { user: "oplopl", date: "2026/03/19", stars: 5, text: "أفضل وأرخص متجر تعاملت معه وسريع بالتسليم" },
+  { user: "فهد عبدالله زايد العتيبي", date: "2026/03/15", stars: 5, text: "ثقه ألف وشكراً له" },
+  { user: "user 64 52039", date: "2026/03/02", stars: 5, text: "متجر ثقه وعوضوني على التأخير" },
+  { user: "abookhhlid", date: "2026/02/28", stars: 5, text: "رجل بمعنى الكلمة ومصداقية ولا أروع" },
+  { user: "عبد العزيز 100110", date: "2026/02/26", stars: 5, text: "مصداقية عالية وفقهم الله" },
+  { user: "user 11 19807", date: "2026/02/23", stars: 5, text: "ثقه وسرعة فالرد والتسليم" },
+  { user: "أبو أحمد 9812", date: "2026/02/22", stars: 5, text: "تعامل وسرعة وثقه" },
+  { user: "ixmh_9", date: "2026/02/17", stars: 5, text: "يوتيوب بريميوم، متعاون وسريع ومصداقية" },
+  { user: "rultaz", date: "2026/02/10", stars: 5, text: "جيد جداً يعطيهم العافية" },
+  { user: "ابو محمد 2594", date: "2026/01/17", stars: 5, text: "ثقه وسرعه" },
+  { user: "user 61 52879", date: "2026/01/15", stars: 5, text: "سرعة اشتراك وأرخص سعر" },
+  { user: "hmoody.11", date: "2026/01/14", stars: 5, text: "صادقين وأسعارهم رخيصة" },
+  { user: "ابونايف1992", date: "2026/01/13", stars: 5, text: "سريعين بالرد وقيمة الاشتراك ممتازة" },
+  { user: "hm91-", date: "2026/01/13", stars: 5, text: "اشتراك يوتيوب سريع وتعامل مميز وضمان" },
+  { user: "ناصر الدوسـري", date: "2026/01/11", stars: 5, text: "يوتيوب بريميوم، سرعة ورد وضمان وسعر ممتاز" },
+];
+
 const orderFormSchema = z.object({
   fullName: z.string().min(2, { message: "الاسم الكامل مطلوب" }),
   email: z.string().email({ message: "البريد الإلكتروني غير صحيح" }),
@@ -27,6 +62,7 @@ type OrderFormValues = z.infer<typeof orderFormSchema>;
 
 
 function Navbar() {
+  const { user, setUser, setShowLogin } = React.useContext(UserContext);
   return (
     <nav className="border-b sticky top-0 z-50" style={{background: "rgba(15,8,4,0.96)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(224,90,20,0.18)"}}>
        <div className="container mx-auto px-4 max-w-7xl h-16 flex items-center justify-between relative">
@@ -39,13 +75,253 @@ function Navbar() {
            <img src="/logo.png" alt="3YN" className="h-12 w-auto object-contain transition-transform hover:scale-105" style={{filter: "drop-shadow(0 0 8px rgba(224,90,20,0.55))"}} />
          </Link>
 
-         <div className="flex items-center gap-4">
+         <div className="flex items-center gap-3">
             <button className="text-foreground hover:text-[#e05a14] transition-colors" data-testid="button-search">
               <Search className="w-5 h-5 text-muted-foreground" />
             </button>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground hidden sm:inline truncate max-w-[80px]">{user.name}</span>
+                <button
+                  onClick={() => setUser(null)}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-red-400 transition-colors"
+                  title="تسجيل الخروج"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowLogin(true)}
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all hover:opacity-90"
+                style={{background: "rgba(224,90,20,0.15)", border: "1px solid rgba(224,90,20,0.35)", color: "#e05a14"}}
+              >
+                <User className="w-3.5 h-3.5" />
+                دخول
+              </button>
+            )}
          </div>
        </div>
     </nav>
+  );
+}
+
+function LoginModal() {
+  const { showLogin, setShowLogin, setUser } = React.useContext(UserContext);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (name.trim().length < 2) return;
+    setUser({ name: name.trim(), phone: phone.trim() });
+    setShowLogin(false);
+    setName("");
+    setPhone("");
+  }
+
+  return (
+    <AnimatePresence>
+      {showLogin && (
+        <motion.div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setShowLogin(false)}
+        >
+          <div className="absolute inset-0" style={{background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)"}} />
+          <motion.div
+            className="relative w-full max-w-sm rounded-2xl p-8 shadow-2xl"
+            style={{background: "rgba(20,10,5,0.98)", border: "1px solid rgba(224,90,20,0.3)"}}
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowLogin(false)}
+              className="absolute top-4 left-4 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4" style={{background: "rgba(224,90,20,0.15)", border: "1px solid rgba(224,90,20,0.3)"}}>
+                <User className="w-7 h-7 text-primary" />
+              </div>
+              <h2 className="text-xl font-black" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>تسجيل الدخول</h2>
+              <p className="text-muted-foreground text-sm mt-1">اختياري — لإضافة تقييمك</p>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4" dir="rtl">
+              <div>
+                <label className="text-sm font-bold text-foreground block mb-1.5">الاسم</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="اسمك"
+                  required
+                  minLength={2}
+                  className="w-full h-11 rounded-lg px-4 text-sm text-white placeholder:text-muted-foreground outline-none transition-colors"
+                  style={{background: "rgba(15,8,4,0.9)", border: "1px solid rgba(139,58,10,0.4)"}}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-bold text-foreground block mb-1.5">رقم الجوال <span className="text-muted-foreground font-normal">(اختياري)</span></label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  placeholder="05xxxxxxxx"
+                  dir="ltr"
+                  className="w-full h-11 rounded-lg px-4 text-sm text-white placeholder:text-muted-foreground outline-none transition-colors text-right"
+                  style={{background: "rgba(15,8,4,0.9)", border: "1px solid rgba(139,58,10,0.4)"}}
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full h-12 rounded-xl font-bold text-white transition-all hover:-translate-y-0.5 mt-2"
+                style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", boxShadow: "0 0 20px rgba(224,90,20,0.35)"}}
+              >
+                دخول
+              </button>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function StarRating({ value, onChange }: { value: number; onChange?: (v: number) => void }) {
+  const [hovered, setHovered] = useState(0);
+  return (
+    <div className="flex gap-0.5">
+      {[1,2,3,4,5].map(i => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onChange?.(i)}
+          onMouseEnter={() => onChange && setHovered(i)}
+          onMouseLeave={() => onChange && setHovered(0)}
+          className={onChange ? "cursor-pointer" : "cursor-default"}
+          disabled={!onChange}
+        >
+          <Star
+            className="w-4 h-4"
+            fill={(hovered || value) >= i ? "#e05a14" : "none"}
+            stroke={(hovered || value) >= i ? "#e05a14" : "#6b6b6b"}
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: ReviewItem[]) => void }) {
+  const { user, setShowLogin } = React.useContext(UserContext);
+  const [newText, setNewText] = useState("");
+  const [newStars, setNewStars] = useState(5);
+  const [showForm, setShowForm] = useState(false);
+
+  function submitReview(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user || newText.trim().length < 3) return;
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
+    setReviews([{ user: user.name, date: dateStr, text: newText.trim(), stars: newStars }, ...reviews]);
+    setNewText("");
+    setNewStars(5);
+    setShowForm(false);
+  }
+
+  const avg = reviews.length ? (reviews.reduce((a,r) => a + r.stars, 0) / reviews.length).toFixed(1) : "5.0";
+
+  return (
+    <section className="py-16" dir="rtl">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-6" style={{borderColor: "rgba(224,90,20,0.2)"}}>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-black" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"}}>آراء العملاء</h2>
+            <div className="flex items-center gap-3 mt-3">
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5" fill="#e05a14" stroke="#e05a14" />)}
+              </div>
+              <span className="text-2xl font-black text-white">{avg}</span>
+              <span className="text-muted-foreground text-sm">({reviews.length} تقييم)</span>
+            </div>
+          </div>
+          <button
+            onClick={() => { if (!user) { setShowLogin(true); } else { setShowForm(v => !v); } }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 self-start md:self-auto"
+            style={{background: "rgba(224,90,20,0.15)", border: "1px solid rgba(224,90,20,0.35)", color: "#e05a14"}}
+          >
+            <MessageSquare className="w-4 h-4" />
+            {user ? "أضف تقييمك" : "سجل دخول لإضافة تقييم"}
+          </button>
+        </div>
+
+        <AnimatePresence>
+          {showForm && user && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden mb-8"
+            >
+              <form onSubmit={submitReview} className="rounded-2xl p-6 space-y-4" style={{background: "rgba(20,10,5,0.9)", border: "1px solid rgba(224,90,20,0.25)"}}>
+                <div className="flex items-center justify-between">
+                  <p className="font-bold text-foreground">تقييمك كـ <span className="text-primary">{user.name}</span></p>
+                  <StarRating value={newStars} onChange={setNewStars} />
+                </div>
+                <textarea
+                  value={newText}
+                  onChange={e => setNewText(e.target.value)}
+                  placeholder="شاركنا رأيك..."
+                  required
+                  minLength={3}
+                  rows={3}
+                  className="w-full rounded-lg px-4 py-3 text-sm text-white placeholder:text-muted-foreground outline-none resize-none"
+                  style={{background: "rgba(15,8,4,0.9)", border: "1px solid rgba(139,58,10,0.4)"}}
+                />
+                <div className="flex gap-3 justify-end">
+                  <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground transition-colors">إلغاء</button>
+                  <button type="submit" className="px-6 py-2 rounded-lg font-bold text-white text-sm transition-all hover:-translate-y-0.5" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)", boxShadow: "0 0 15px rgba(224,90,20,0.3)"}}>نشر التقييم</button>
+                </div>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {reviews.map((r, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.4) }}
+              className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{background: "rgba(20,10,5,0.8)", border: "1px solid rgba(139,58,10,0.2)", backdropFilter: "blur(10px)"}}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 font-bold text-sm text-white" style={{background: "linear-gradient(135deg, #e05a14, #8b3a0a)"}}>
+                    {r.user.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-foreground leading-tight">{r.user}</p>
+                    <p className="text-xs text-muted-foreground">{r.date}</p>
+                  </div>
+                </div>
+                <StarRating value={r.stars} />
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">{r.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -294,7 +570,7 @@ function ProductDetail() {
   );
 }
 
-function Home() {
+function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: ReviewItem[]) => void }) {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
@@ -542,6 +818,8 @@ function Home() {
           </div>
         </section>
       </main>
+
+      <ReviewsSection reviews={reviews} setReviews={setReviews} />
 
       <Footer />
     </div>
@@ -833,10 +1111,14 @@ const WhatsAppFloat = () => (
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [reviews, setReviews] = useState<ReviewItem[]>(INITIAL_REVIEWS);
 
   return (
-    <>
+    <UserContext.Provider value={{ user, setUser, showLogin, setShowLogin }}>
       {showSplash && <SplashScreen onDone={() => setShowSplash(false)} />}
+      <LoginModal />
       <Switch>
         <Route path="/product" component={ProductDetail} />
         <Route path="/support" component={SupportPage} />
@@ -844,11 +1126,15 @@ export default function App() {
         <Route path="/policy/terms" component={TermsPage} />
         <Route path="/policy/privacy" component={PrivacyPage} />
         <Route path="/about" component={AboutPage} />
-        <Route path="/" component={Home} />
-        <Route component={Home} />
+        <Route path="/">
+          {() => <Home reviews={reviews} setReviews={setReviews} />}
+        </Route>
+        <Route>
+          {() => <Home reviews={reviews} setReviews={setReviews} />}
+        </Route>
       </Switch>
       <WhatsAppFloat />
       <Toaster />
-    </>
+    </UserContext.Provider>
   );
 }
