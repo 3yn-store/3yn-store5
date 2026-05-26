@@ -34,7 +34,9 @@ const UserContext = React.createContext<{
   setUser: (u: UserType | null) => void;
   showLogin: boolean;
   setShowLogin: (v: boolean) => void;
-}>({ user: null, setUser: () => {}, showLogin: false, setShowLogin: () => {} });
+  reviews: ReviewItem[];
+  setReviews: (r: ReviewItem[]) => void;
+}>({ user: null, setUser: () => {}, showLogin: false, setShowLogin: () => {}, reviews: [], setReviews: () => {} });
 
 const INITIAL_REVIEWS: ReviewItem[] = [
   { user: "استغفرالله. .", date: "2026/03/30", stars: 5, text: "انصح بالتعامل معهم في قمة الأخلاق لو فيه أكثر من 5 نجوم أعطيتهم وزيادة" },
@@ -228,8 +230,8 @@ function StarRating({ value, onChange }: { value: number; onChange?: (v: number)
   );
 }
 
-function ReviewsSection({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: ReviewItem[]) => void }) {
-  const { user, setShowLogin } = React.useContext(UserContext);
+function ReviewsSection() {
+  const { user, setShowLogin, reviews, setReviews } = React.useContext(UserContext);
   const [newText, setNewText] = useState("");
   const [newStars, setNewStars] = useState(5);
   const [showForm, setShowForm] = useState(false);
@@ -567,6 +569,8 @@ function ProductDetail() {
         </div>
       </main>
 
+      <ReviewsSection />
+
       {/* Sticky Bottom CTA for Mobile */}
       <div className="sticky bottom-0 left-0 right-0 p-4 border-t z-40 md:hidden flex justify-center" style={{background: "rgba(10, 10, 20, 0.95)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(224,90,20,0.2)"}}>
         <Button onClick={handlePay} className="w-full max-w-sm h-14 text-lg font-bold rounded-xl" style={{boxShadow: "0 0 20px rgba(224,90,20,0.4)"}} data-testid="button-pay-now-mobile">
@@ -756,7 +760,7 @@ function Home({ reviews, setReviews }: { reviews: ReviewItem[]; setReviews: (r: 
         </section>
 
         {/* Reviews Section */}
-        <ReviewsSection reviews={reviews} setReviews={setReviews} />
+        <ReviewsSection />
 
         {/* Order Form */}
         <section id="order" className="py-20" style={{background: "transparent"}}>
@@ -1126,7 +1130,7 @@ export default function App() {
   const [reviews, setReviews] = useState<ReviewItem[]>(INITIAL_REVIEWS);
 
   return (
-    <UserContext.Provider value={{ user, setUser, showLogin, setShowLogin }}>
+    <UserContext.Provider value={{ user, setUser, showLogin, setShowLogin, reviews, setReviews }}>
       {showSplash && <SplashScreen onDone={() => setShowSplash(false)} />}
       <LoginModal />
       <Switch>
