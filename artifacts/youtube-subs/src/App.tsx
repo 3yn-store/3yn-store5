@@ -82,7 +82,7 @@ function Navbar() {
          </div>
 
          <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-           <YtLogo className="h-10 w-auto transition-transform hover:scale-105" style={{filter: "drop-shadow(0 0 8px rgba(255,0,0,0.7))", display: "block"}} />
+           <img src="/logo.png" alt="3YN" className="h-12 w-auto object-contain transition-transform hover:scale-105" style={{filter: "drop-shadow(0 0 8px rgba(224,90,20,0.55))"}} />
          </Link>
 
          <div className="flex items-center gap-3">
@@ -341,7 +341,7 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-zinc-400">
           <div>
             <div className="mb-5">
-              <YtLogo className="h-14 w-auto" style={{filter: "drop-shadow(0 0 10px rgba(255,0,0,0.5))", display: "block"}} />
+              <img src="/logo.png" alt="3YN" className="h-16 w-auto object-contain" style={{filter: "drop-shadow(0 0 10px rgba(224,90,20,0.4))"}} />
             </div>
             <p className="text-sm leading-relaxed mb-6">
               متجرك الأول المعتمد لبيع اشتراكات اليوتيوب بريميوم بأفضل الأسعار وأسرع وقت تفعيل. خدمة عملاء على مدار الساعة لخدمتكم وتلبية احتياجاتكم.
@@ -1086,12 +1086,14 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
         exit={{ scale: 1.1, opacity: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 18 }}
       >
-        <motion.div
+        <motion.img
+          src="/logo.png"
+          alt="3YN"
+          className="w-52 h-auto object-contain"
+          style={{filter: "drop-shadow(0 0 30px rgba(224,90,20,0.8)) drop-shadow(0 0 60px rgba(224,90,20,0.4))"}}
           animate={{ scale: [1, 1.04, 1] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <YtLogo className="w-40 h-auto" style={{filter: "drop-shadow(0 0 30px rgba(255,0,0,0.9)) drop-shadow(0 0 60px rgba(255,0,0,0.4))", display: "block"}} />
-        </motion.div>
+        />
         <motion.div
           className="h-1 rounded-full"
           style={{background: "linear-gradient(90deg, #8b3a0a, #e05a14, #8b3a0a)", boxShadow: "0 0 12px rgba(224,90,20,0.6)"}}
