@@ -231,20 +231,26 @@ function StarRating({ value, onChange }: { value: number; onChange?: (v: number)
 }
 
 function ReviewsSection() {
-  const { user, setShowLogin, reviews, setReviews } = React.useContext(UserContext);
+  const { user, reviews, setReviews } = React.useContext(UserContext);
   const [newText, setNewText] = useState("");
   const [newStars, setNewStars] = useState(5);
+  const [newName, setNewName] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   function submitReview(e: React.FormEvent) {
     e.preventDefault();
-    if (!user || newText.trim().length < 3) return;
+    const reviewerName = user?.name || newName.trim();
+    if (!reviewerName || newText.trim().length < 3) return;
     const today = new Date();
     const dateStr = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
-    setReviews([{ user: user.name, date: dateStr, text: newText.trim(), stars: newStars }, ...reviews]);
+    setReviews([{ user: reviewerName, date: dateStr, text: newText.trim(), stars: newStars }, ...reviews]);
     setNewText("");
+    setNewName("");
     setNewStars(5);
     setShowForm(false);
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 4000);
   }
 
   const avg = reviews.length ? (reviews.reduce((a,r) => a + r.stars, 0) / reviews.length).toFixed(1) : "5.0";
@@ -263,18 +269,25 @@ function ReviewsSection() {
               <span className="text-muted-foreground text-sm">({reviews.length} تقييم)</span>
             </div>
           </div>
-          <button
-            onClick={() => { if (!user) { setShowLogin(true); } else { setShowForm(v => !v); } }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 self-start md:self-auto"
-            style={{background: "rgba(224,90,20,0.15)", border: "1px solid rgba(224,90,20,0.35)", color: "#e05a14"}}
-          >
-            <MessageSquare className="w-4 h-4" />
-            {user ? "أضف تقييمك" : "سجل دخول لإضافة تقييم"}
-          </button>
+          <div className="flex flex-col items-end gap-2">
+            {submitted && (
+              <span className="text-green-400 text-sm font-bold flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4" /> تم نشر تقييمك!
+              </span>
+            )}
+            <button
+              onClick={() => setShowForm(v => !v)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 self-start md:self-auto"
+              style={{background: "rgba(224,90,20,0.15)", border: "1px solid rgba(224,90,20,0.35)", color: "#e05a14"}}
+            >
+              <MessageSquare className="w-4 h-4" />
+              أضف تقييمك
+            </button>
+          </div>
         </div>
 
         <AnimatePresence>
-          {showForm && user && (
+          {showForm && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
@@ -282,8 +295,19 @@ function ReviewsSection() {
               className="overflow-hidden mb-8"
             >
               <form onSubmit={submitReview} className="rounded-2xl p-6 space-y-4" style={{background: "rgba(20,10,5,0.9)", border: "1px solid rgba(224,90,20,0.25)"}}>
-                <div className="flex items-center justify-between">
-                  <p className="font-bold text-foreground">تقييمك كـ <span className="text-primary">{user.name}</span></p>
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  {user ? (
+                    <p className="font-bold text-foreground">تقييمك كـ <span className="text-primary">{user.name}</span></p>
+                  ) : (
+                    <input
+                      value={newName}
+                      onChange={e => setNewName(e.target.value)}
+                      placeholder="اسمك *"
+                      required
+                      className="rounded-lg px-4 py-2 text-sm text-white placeholder:text-muted-foreground outline-none flex-1 min-w-[160px]"
+                      style={{background: "rgba(15,8,4,0.9)", border: "1px solid rgba(139,58,10,0.4)"}}
+                    />
+                  )}
                   <StarRating value={newStars} onChange={setNewStars} />
                 </div>
                 <textarea
